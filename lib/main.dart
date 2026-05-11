@@ -6,6 +6,8 @@ import 'package:flutter_w/3rdlogin.dart';
 import 'package:flutter_w/controller/notification.dart';
 import 'package:flutter_w/register..dart';
 
+import 'package:flutter_w/register2.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
