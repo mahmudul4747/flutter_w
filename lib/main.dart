@@ -1,25 +1,35 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+
+// Pages
 import 'package:flutter_w/1login.dart';
 import 'package:flutter_w/2login.dart';
 import 'package:flutter_w/3rdlogin.dart';
-import 'package:flutter_w/controller/notification.dart';
+import 'package:flutter_w/3rdreg.dart';
+import 'package:flutter_w/Home/login.dart';
 import 'package:flutter_w/register..dart';
 
 import 'package:flutter_w/register2.dart';
+import 'package:flutter_w/Home/home2.dart';
 
+// Controller
+import 'package:flutter_w/controller/notification.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Firebase Initialize
   try {
     await Firebase.initializeApp();
+    debugPrint("Firebase Initialized");
   } catch (e) {
     debugPrint("Firebase Error: $e");
   }
 
+  // Notification Initialize
   try {
     await initNotification();
+    debugPrint("Notification Initialized");
   } catch (e) {
     debugPrint("Notification Error: $e");
   }
@@ -34,7 +44,23 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Register2(),
+      title: 'Flutter App',
+
+      // First Screen
+      home: const Home2(),
+
+      // Routes
+      routes: {
+        '/login1': (context) => LoginPage(),
+        '/login2': (context) => const Login2(),
+        '/login3': (context) => const Login3rd(),
+
+        '/register1': (context) => const RegisterPage(),
+        '/register2': (context) => const Register2(),
+        '/register3': (context) => const Register3(),
+
+        '/home': (context) => const Home2(),
+      },
     );
   }
 }
