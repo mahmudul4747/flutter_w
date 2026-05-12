@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_w/3login.dart';
+import 'package:flutter_w/3rdlogin.dart';
 import 'package:http/http.dart' as http;
 
 class Register3 extends StatefulWidget {
@@ -179,7 +179,7 @@ class _Register3State extends State<Register3> {
             }
           }
                           Future.delayed(Duration(seconds: 2), () {
-                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Login2()
+                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Login3rd()
                           )
                           );
                           
