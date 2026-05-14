@@ -109,9 +109,9 @@ child: Scaffold(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextButton(onPressed: (){
-              Registerp() {
+              
                 Navigator.push(context, MaterialPageRoute(builder: (context) => Registerp()));
-              }
+           
             }, child: Text("Sign Up",style: TextStyle(color: const Color.fromARGB(255, 5, 3, 3),fontWeight: FontWeight.bold,fontSize: 20),)),
              SizedBox(width: 20,),
              

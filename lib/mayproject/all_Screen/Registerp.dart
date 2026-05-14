@@ -139,59 +139,24 @@ class _RegisterpState extends State<Registerp> {
                    const SizedBox(height: 20),
                    SizedBox(width: 200,
                   child:ElevatedButton(
-                    onPressed: () {
-                      if(_formKey.currentState!.validate()){
-                       Future<void> register() async {
-            try {
-              var response = await http.post(
-                Uri.parse('http://10.0.2.2/php/register.php'),
-                body: {
-          'username': usernameController.text,
-          'email': emailController.text,
-          'password': passwordController.text,
-                },
-              );
-          
-              var data = response.body;
-          
-              print(data);
-          
-              if (data.contains("success")) {
-                ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Registration Success")),
-                );
-          
-                usernameController.clear();
-                emailController.clear();
-                passwordController.clear();
-                
-          
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Registration Failed")),
-                );
-              }
-          
-            } catch (e) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text("Error: $e")),
-              );
-            }
-          }
-                          Future.delayed(Duration(seconds: 2), () {
-                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Loginp()
-                          )
+                    onPressed: () async {
+                        if (_formKey.currentState!.validate()) {
+
+                          await register();
+
+                          Future.delayed(
+                            Duration(seconds: 2),
+                            () {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const Loginp(),
+                                ),
+                              );
+                            },
                           );
-                          
-                          }
-                          );
-                        // Process registration
-                      }
-                  
-                      
-                  
-          
-                    }, style: ElevatedButton.styleFrom(
+                        }
+                      },     style: ElevatedButton.styleFrom(
                           backgroundColor: const Color.fromARGB(255, 160, 42, 207),
                           padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
                           shape: RoundedRectangleBorder(
