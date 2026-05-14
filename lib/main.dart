@@ -7,6 +7,7 @@ import 'package:flutter_w/2login.dart';
 import 'package:flutter_w/3rdlogin.dart';
 import 'package:flutter_w/3rdreg.dart';
 import 'package:flutter_w/Home/login.dart';
+import 'package:flutter_w/mayproject/mainp.dart';
 import 'package:flutter_w/register..dart';
 
 import 'package:flutter_w/register2.dart';
@@ -47,20 +48,9 @@ class MyApp extends StatelessWidget {
       title: 'Flutter App',
 
       // First Screen
-      home: const Home2(),
+      home: Project2(),
 
-      // Routes
-      routes: {
-        '/login1': (context) => LoginPage(),
-        '/login2': (context) => const Login2(),
-        '/login3': (context) => const Login3rd(),
-
-        '/register1': (context) => const RegisterPage(),
-        '/register2': (context) => const Register2(),
-        '/register3': (context) => const Register3(),
-
-        '/home': (context) => const Home2(),
-      },
+     
     );
   }
 }
