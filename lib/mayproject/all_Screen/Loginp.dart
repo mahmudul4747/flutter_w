@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_w/mayproject/all_Screen/Registerp.dart';
 import 'package:http/http.dart' as http;
 
 class Loginp extends StatefulWidget {
@@ -108,7 +109,9 @@ child: Scaffold(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextButton(onPressed: (){
-              
+              Registerp() {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => Registerp()));
+              }
             }, child: Text("Sign Up",style: TextStyle(color: const Color.fromARGB(255, 5, 3, 3),fontWeight: FontWeight.bold,fontSize: 20),)),
              SizedBox(width: 20,),
              
