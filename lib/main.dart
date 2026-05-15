@@ -7,6 +7,7 @@ import 'package:flutter_w/2login.dart';
 import 'package:flutter_w/3rdlogin.dart';
 import 'package:flutter_w/3rdreg.dart';
 import 'package:flutter_w/Home/login.dart';
+import 'package:flutter_w/mayproject/all_Screen/Student_list.dart';
 import 'package:flutter_w/mayproject/mainp.dart';
 import 'package:flutter_w/register..dart';
 
@@ -48,7 +49,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter App',
 
       // First Screen
-      home: Project2(),
+      home: StudentList(),
 
      
     );
