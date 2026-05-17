@@ -52,14 +52,15 @@ final TextEditingController searchController = TextEditingController();
 
   try {
 
-    var url = Uri.parse("http://10.0.2.2/student_api/read.php");
+    var url = Uri.parse("http://10.0.2.2/php/stu_read.php");
 
     var response = await http.get(url);
 
     if (response.statusCode == 200) {
-
+print("data successfully fetched"); 
       final data = jsonDecode(response.body);
 
+print("Imran: $data");
       setState(() {
 
         students = List<Map<String, dynamic>>.from(data);
@@ -97,7 +98,7 @@ final TextEditingController searchController = TextEditingController();
   // DELETE 
   Future<void> deleteStudentAPI(String id) async {
 
-    var url = Uri.parse("http://10.0.2.2/php/stu_delet.php");
+    var url = Uri.parse("http://10.0.2.2/php/stu_delete.php");
 
     await http.post(url, body: {
       "id": id,
@@ -109,21 +110,25 @@ final TextEditingController searchController = TextEditingController();
   // Update
   Future<void> updateStudentAPI(String id) async {
 
-    var url = Uri.parse("http://10.0.2.2/php/stu_update.php");
+  var url = Uri.parse(
+    "http://10.0.2.2/php/stu_update.php",
+  );
 
-    await http.post(url, body: {
+  await http.post(url, body: {
 
-      "id": id,
-      "name": nameController.text,
-      "email": emailController.text,
-      "department": departmentController.text,
-      "semester": semesterController.text,
+    "id": id,
+    "name": nameController.text,
+    "email": emailController.text,
+    "department": departmentController.text,
+    "semester": semesterController.text,
 
-    });
+  });
 
-    await getStudents();
-  }
+  await getStudents();
 
+  setState(() {});
+
+}
   // ADD DIALOG
   void showAddStudentDialog() {
 
@@ -133,48 +138,193 @@ final TextEditingController searchController = TextEditingController();
 
         return AlertDialog(
 
-          title: const Text("Add Student"),
+  title: const Text("Add Student"),
 
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
+  content: Column(
 
-              TextField(controller: nameController),
-              TextField(controller: emailController),
-             // TextField(controller: departmentController),
-             // TextField(controller: semesterController),
+    mainAxisSize: MainAxisSize.min,
 
-            ],
+    children: [
+
+      TextField(
+
+        controller: nameController,
+
+        decoration: const InputDecoration(
+          hintText: "Name",
+        ),
+
+      ),
+
+      const SizedBox(height: 10),
+
+      TextField(
+
+        controller: emailController,
+
+        decoration: const InputDecoration(
+          hintText: "Email",
+        ),
+
+      ),
+
+    ],
+
+  ),
+
+  actions: [
+
+    TextButton(
+
+      onPressed: () => Navigator.pop(context),
+
+      child: const Text("Cancel"),
+
+    ),
+
+    ElevatedButton(
+
+      onPressed: () async {
+
+        await addStudentAPI();
+
+        nameController.clear();
+        emailController.clear();
+
+        Navigator.pop(context);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+
+          const SnackBar(
+
+            content: Text("Student Added Successfully"),
+
           ),
 
-          actions: [
-
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text("Cancel"),
-            ),
-
-            ElevatedButton(
-              onPressed: () async {
-
-                await addStudentAPI();
-
-                nameController.clear();
-                emailController.clear();
-                departmentController.clear();
-                semesterController.clear();
-
-                Navigator.pop(context);
-
-              },
-              child: const Text("Add"),
-            ),
-
-          ],
         );
+
+      },
+
+      child: const Text("Add"),
+
+    ),
+
+  ],
+
+);
       },
     );
   }
+  void showEditDialog(Map<String, dynamic> student) {
+
+  nameController.text = student['name'];
+  emailController.text = student['email'];
+  departmentController.text = student['department'];
+  semesterController.text = student['semester'];
+
+  showDialog(
+
+    context: context,
+
+    builder: (context) {
+
+      return AlertDialog(
+
+        title: const Text("Update Student"),
+
+        content: Column(
+
+          mainAxisSize: MainAxisSize.min,
+
+          children: [
+
+            TextField(
+
+              controller: nameController,
+
+              decoration: const InputDecoration(
+                hintText: "Name",
+              ),
+
+            ),
+
+            const SizedBox(height: 10),
+
+            TextField(
+
+              controller: emailController,
+
+              decoration: const InputDecoration(
+                hintText: "Email",
+              ),
+
+            ),
+
+            const SizedBox(height: 10),
+
+            TextField(
+
+              controller: departmentController,
+
+              decoration: const InputDecoration(
+                hintText: "Department",
+              ),
+
+            ),
+
+            const SizedBox(height: 10),
+
+            TextField(
+
+              controller: semesterController,
+
+              decoration: const InputDecoration(
+                hintText: "Semester",
+              ),
+
+            ),
+
+          ],
+
+        ),
+
+        actions: [
+
+          TextButton(
+
+            onPressed: (){
+              Navigator.pop(context);
+            },
+
+            child: const Text("Cancel"),
+
+          ),
+
+          ElevatedButton(
+
+            onPressed: () async {
+
+              await updateStudentAPI(
+                student['id'].toString(),
+              );
+
+              Navigator.pop(context);
+
+            },
+
+            child: const Text("Update"),
+
+          ),
+
+        ],
+
+      );
+
+    },
+
+  );
+
+}
 
   //  UI 
   @override
@@ -322,11 +472,14 @@ final TextEditingController searchController = TextEditingController();
 
                 onSelected: (value) async {
 
-                  if (value == 'delete') {
+                if (value == 'edit') {
+                  showEditDialog(filteredStudents[index]);
+                }
+
+                  else if (value == 'delete') {
 
                     await deleteStudentAPI(
-                      filteredStudents[index]['id']
-                          .toString(),
+                      filteredStudents[index]['id'].toString(),
                     );
 
                   }
@@ -336,32 +489,39 @@ final TextEditingController searchController = TextEditingController();
                 itemBuilder: (context) => const [
 
                   PopupMenuItem(
+
                     value: 'edit',
+
                     child: Text("Edit"),
+
                   ),
 
                   PopupMenuItem(
+
                     value: 'delete',
+
                     child: Text("Delete"),
+
                   ),
 
                 ],
 
               ),
 
-            );
+                          );
 
-          },
+                        },
 
-        ),
+                      ),
 
-      ),
+                    ),
 
-    ],
+                  ],
 
-  ),
+                ),
 
-),
+              ),
+
 
             )
           ],
