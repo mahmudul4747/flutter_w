@@ -307,13 +307,13 @@ final TextEditingController searchController = TextEditingController();
                     "Email: ${filteredStudents[index]['email']}",
                   ),
 
-                  Text(
+                /*  Text(
                     "Dept: ${filteredStudents[index]['department']}",
                   ),
 
                   Text(
                     "Sem: ${filteredStudents[index]['semester']}",
-                  ),
+                  ),*/
 
                 ],
               ),
