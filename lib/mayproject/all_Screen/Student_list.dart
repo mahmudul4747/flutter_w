@@ -1,9 +1,15 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
+
+
 
 class StudentList extends StatefulWidget {
-  const StudentList({super.key});
+    final Function toggleTheme;
+    
+  const StudentList({super.key, required this.toggleTheme});
 
   @override
   State<StudentList> createState() => _StudentListState();
@@ -17,26 +23,32 @@ class _StudentListState extends State<StudentList> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController departmentController = TextEditingController();
   final TextEditingController semesterController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
  
- List<Map<String, dynamic>> filteredStudents = [];
+  final _addFormKey = GlobalKey<FormState>();
+final _editFormKey = GlobalKey<FormState>();
+File? selectedImage;
+final ImagePicker picker = ImagePicker();
+  
+ 
+
+List<Map<String, dynamic>> filteredStudents = [];
 
 final TextEditingController searchController = TextEditingController();
   @override
-  void initState() {
-    super.initState();
-   Future.delayed(Duration.zero, () async {
-  await getStudents();
-});
-  }
+void initState() {
+  super.initState();
+  filteredStudents = [];
+  Future.delayed(Duration.zero, () async {
+    await getStudents();
+  });
+}
   void searchStudent(String value) {
 
   setState(() {
 
     filteredStudents = students.where((student) {
 
-      final name =
-          student['name'].toString().toLowerCase();
+      final name = (student['name'] ?? '').toString().toLowerCase();
 
       return name.contains(value.toLowerCase());
 
@@ -44,6 +56,16 @@ final TextEditingController searchController = TextEditingController();
 
   });
 
+}
+
+Future<void> pickImage() async {
+  final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+  if (pickedFile != null) {
+    setState(() {
+      selectedImage = File(pickedFile.path);
+    });
+  }
 }
 
 
@@ -81,21 +103,28 @@ final TextEditingController searchController = TextEditingController();
 }
   //  ADD 
   Future<void> addStudentAPI() async {
+  var url = Uri.parse("http://10.0.2.2/php/stu_create.php");
 
-    var url = Uri.parse("http://10.0.2.2/php/stu_create.php");
+  var request = http.MultipartRequest("POST", url);
 
-    await http.post(url, body: {
+  request.fields['name'] = nameController.text;
+  request.fields['email'] = emailController.text;
 
-      "name": nameController.text,
-      "email": emailController.text,
-      "department": departmentController.text,
-      "semester": semesterController.text,
-
-    });
-
-    await getStudents();
+  if (selectedImage != null) {
+    request.files.add(
+      await http.MultipartFile.fromPath(
+        'image',
+        selectedImage!.path,
+      ),
+    );
   }
 
+  var response = await request.send();
+
+  if (response.statusCode == 200) {
+    await getStudents();
+  }
+}
   // DELETE 
   Future<void> deleteStudentAPI(String id) async {
 
@@ -131,7 +160,10 @@ print(nameController.text);
   setState(() {});
 
 }
-  // ADD DIALOG
+
+//
+
+ 
   // ADD DIALOG
 void showAddStudentDialog() {
 
@@ -145,13 +177,25 @@ void showAddStudentDialog() {
 
         content: Form(
 
-          key: _formKey,
+          key: _addFormKey,
 
           child: Column(
 
             mainAxisSize: MainAxisSize.min,
 
             children: [
+              GestureDetector(
+                onTap: pickImage,
+                child: CircleAvatar(
+                  radius: 40,
+                  backgroundImage: selectedImage != null
+                      ? FileImage(selectedImage!)
+                      : null,
+                  child: selectedImage == null
+                      ? Icon(Icons.camera_alt)
+                      : null,
+                ),
+              ),
 
               TextFormField(
 
@@ -160,7 +204,7 @@ void showAddStudentDialog() {
                 decoration: const InputDecoration(
 
                   hintText: "Name",
-                  border: OutlineInputBorder(),
+                  
 
                 ),
 
@@ -187,7 +231,7 @@ void showAddStudentDialog() {
                 decoration: const InputDecoration(
 
                   hintText: "Email",
-                  border: OutlineInputBorder(),
+                  
 
                 ),
 
@@ -216,6 +260,7 @@ void showAddStudentDialog() {
           ),
 
         ),
+        
 
         actions: [
 
@@ -235,7 +280,7 @@ void showAddStudentDialog() {
 
             onPressed: () async {
 
-              if (_formKey.currentState!.validate()) {
+              if (_addFormKey.currentState!.validate()) {
 
                 await addStudentAPI();
 
@@ -285,7 +330,7 @@ void showAddStudentDialog() {
         return AlertDialog(
   title: const Text("Edit Student"),
   content: Form(
-    key: _formKey,
+    key: _editFormKey,
     child: Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -293,7 +338,7 @@ void showAddStudentDialog() {
           controller: nameController,
           decoration: const InputDecoration(
             hintText: "Name",
-            border: OutlineInputBorder(),
+            
           ),
           validator: (value) {
             if (value == null || value.isEmpty) {
@@ -307,7 +352,7 @@ void showAddStudentDialog() {
           controller: emailController,
           decoration: const InputDecoration(
             hintText: "Email",
-            border: OutlineInputBorder(),
+           
           ),
           validator: (value) {
             if (value == null || value.isEmpty) {
@@ -330,7 +375,7 @@ void showAddStudentDialog() {
 
     ElevatedButton(
       onPressed: () async {
-          if (_formKey.currentState!.validate()) {
+          if (_editFormKey.currentState!.validate()) {
 
         await updateStudentAPI(student['id'].toString());
         nameController.clear();
@@ -354,7 +399,7 @@ void showAddStudentDialog() {
       child: const Text("Update"),
     ),
   ],
-  
+
 );
 
       },
@@ -386,8 +431,7 @@ void showAddStudentDialog() {
               "Student List",
               style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
             ),
-            
-
+          
             const SizedBox(height: 20),
 
             Expanded(
@@ -468,93 +512,146 @@ void showAddStudentDialog() {
       // LIST
       Expanded(
 
-        child: ListView.builder(
+  child: ListView.builder(
 
-          itemCount: filteredStudents.length,
+    itemCount: filteredStudents.length,
 
-          itemBuilder: (context, index) {
+    itemBuilder: (context, index) {
 
-            return ListTile(
+      return Padding(
 
-              leading: const CircleAvatar(
-                backgroundColor: Color.fromARGB(214, 240, 219, 37),
-                child: Icon(Icons.person, color: Color.fromARGB(221, 252, 251, 251)),
+        padding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 6,
+        ),
+
+        child: Container(
+
+          decoration: BoxDecoration(
+
+            color: Colors.white,
+
+            borderRadius: BorderRadius.circular(15),
+
+            boxShadow: [
+
+              BoxShadow(
+
+                color: const Color.fromARGB(214, 240, 219, 37),
+
+                blurRadius: 6,
+
+                offset: const Offset(0, 3),
+
               ),
 
-              title: Text(
-                filteredStudents[index]['name'] ?? "",style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-              ),),
+            ],
 
-              subtitle: Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.start,
+          ),
 
-                children: [
+          child: ListTile(
 
-                  Text(
-                    "Email: ${filteredStudents[index]['email']}", style: const TextStyle(color: Colors.black87),
-                  ),
+           leading: CircleAvatar(
+  backgroundImage: (filteredStudents[index]['image'] != null &&
+          filteredStudents[index]['image'].toString().isNotEmpty)
+      ? NetworkImage(
+          "http://10.0.2.2/php/uploads/${filteredStudents[index]['image']}",
+        )
+      : null,
+  child: (filteredStudents[index]['image'] == null ||
+          filteredStudents[index]['image'].toString().isEmpty)
+      ? const Icon(Icons.person)
+      : null,
+),
 
-                /*  Text(
-                    "Dept: ${filteredStudents[index]['department']}",
-                  ),
+            title: Text(
 
-                  Text(
-                    "Sem: ${filteredStudents[index]['semester']}",
-                  ),*/
+              filteredStudents[index]['name'] ?? "",
 
-                ],
+              style: const TextStyle(
+
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+
               ),
 
-              trailing: PopupMenuButton(
+            ),
 
-                onSelected: (value) async {
+            subtitle: Column(
+
+              crossAxisAlignment: CrossAxisAlignment.start,
+
+              children: [
+
+                const SizedBox(height: 5),
+
+                Text(
+
+                  "Email: ${filteredStudents[index]['email']}",
+
+                  style: const TextStyle(
+                    color: Colors.black87,
+                  ),
+
+                ),
+
+              ],
+
+            ),
+
+            trailing: PopupMenuButton(
+
+              onSelected: (value) async {
 
                 if (value == 'edit') {
+
                   showEditDialog(filteredStudents[index]);
+
                 }
 
-                  else if (value == 'delete') {
+                else if (value == 'delete') {
 
-                    await deleteStudentAPI(
-                      filteredStudents[index]['id'].toString(),
-                    );
+                  await deleteStudentAPI(
+                    filteredStudents[index]['id'].toString(),
+                  );
 
-                  }
+                }
 
-                },
+              },
 
-                itemBuilder: (context) => const [
+              itemBuilder: (context) => const [
 
-                  PopupMenuItem(
+                PopupMenuItem(
 
-                    value: 'edit',
+                  value: 'edit',
 
-                    child: Text("Edit"),
+                  child: Text("Edit"),
 
-                  ),
+                ),
 
-                  PopupMenuItem(
+                PopupMenuItem(
 
-                    value: 'delete',
+                  value: 'delete',
 
-                    child: Text("Delete"),
+                  child: Text("Delete"),
 
-                  ),
+                ),
 
-                ],
+              ],
 
-              ),
+            ),
 
-                          );
+          ),
 
-                        },
+        ),
 
-                      ),
+      );
 
-                    ),
+    },
+
+  ),
+
+)
 
                   ],
 

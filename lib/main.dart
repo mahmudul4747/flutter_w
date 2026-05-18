@@ -1,4 +1,4 @@
-import 'package:firebase_core/firebase_core.dart';
+
 import 'package:flutter/material.dart';
 
 // Pages
@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter App',
 
       // First Screen
-      home: StudentList(),
+      home: Project2(),
 
      
     );
