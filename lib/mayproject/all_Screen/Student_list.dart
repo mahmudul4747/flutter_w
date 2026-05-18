@@ -1,8 +1,7 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_w/mayproject/all_Screen/stu_data.dart';
 import 'package:http/http.dart' as http;
-import 'package:image_picker/image_picker.dart';
 
 
 
@@ -26,8 +25,7 @@ class _StudentListState extends State<StudentList> {
  
   final _addFormKey = GlobalKey<FormState>();
 final _editFormKey = GlobalKey<FormState>();
-File? selectedImage;
-final ImagePicker picker = ImagePicker();
+
   
  
 
@@ -56,16 +54,6 @@ void initState() {
 
   });
 
-}
-
-Future<void> pickImage() async {
-  final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-
-  if (pickedFile != null) {
-    setState(() {
-      selectedImage = File(pickedFile.path);
-    });
-  }
 }
 
 
@@ -103,40 +91,36 @@ Future<void> pickImage() async {
 }
   //  ADD 
   Future<void> addStudentAPI() async {
-  var url = Uri.parse("http://10.0.2.2/php/stu_create.php");
 
-  var request = http.MultipartRequest("POST", url);
-
-  request.fields['name'] = nameController.text;
-  request.fields['email'] = emailController.text;
-
-  if (selectedImage != null) {
-    request.files.add(
-      await http.MultipartFile.fromPath(
-        'image',
-        selectedImage!.path,
-      ),
-    );
-  }
-
-  var response = await request.send();
-
-  if (response.statusCode == 200) {
-    await getStudents();
-  }
-}
-  // DELETE 
-  Future<void> deleteStudentAPI(String id) async {
-
-    var url = Uri.parse("http://10.0.2.2/php/stu_delete.php");
+    var url = Uri.parse("http://10.0.2.2/php/stu_create.php");
 
     await http.post(url, body: {
-      "id": id,
+
+      "name": nameController.text,
+      "email": emailController.text,
+      "department": departmentController.text,
+      "semester": semesterController.text,
+
     });
 
     await getStudents();
   }
 
+  // DELETE 
+  Future<void> deleteStudentAPI(String id) async {
+  var url = Uri.parse("http://10.0.2.2/php/stu_delete.php");
+
+  var response = await http.post(url, body: {
+    "id": id,
+  });
+
+  print("DELETE RESPONSE: ${response.body}");
+
+  await getStudents();
+
+  // 🔥 reset search too
+  searchController.clear();
+}
   // Update
   Future<void> updateStudentAPI(String id) async {
 print("ID: $id");
@@ -160,10 +144,7 @@ print(nameController.text);
   setState(() {});
 
 }
-
-//
-
- 
+  // ADD DIALOG
   // ADD DIALOG
 void showAddStudentDialog() {
 
@@ -184,18 +165,6 @@ void showAddStudentDialog() {
             mainAxisSize: MainAxisSize.min,
 
             children: [
-              GestureDetector(
-                onTap: pickImage,
-                child: CircleAvatar(
-                  radius: 40,
-                  backgroundImage: selectedImage != null
-                      ? FileImage(selectedImage!)
-                      : null,
-                  child: selectedImage == null
-                      ? Icon(Icons.camera_alt)
-                      : null,
-                ),
-              ),
 
               TextFormField(
 
@@ -260,7 +229,6 @@ void showAddStudentDialog() {
           ),
 
         ),
-        
 
         actions: [
 
@@ -380,8 +348,6 @@ void showAddStudentDialog() {
         await updateStudentAPI(student['id'].toString());
         nameController.clear();
         emailController.clear();
-        departmentController.clear();
-        semesterController.clear();
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -551,18 +517,16 @@ void showAddStudentDialog() {
 
           child: ListTile(
 
-           leading: CircleAvatar(
-  backgroundImage: (filteredStudents[index]['image'] != null &&
-          filteredStudents[index]['image'].toString().isNotEmpty)
-      ? NetworkImage(
-          "http://10.0.2.2/php/uploads/${filteredStudents[index]['image']}",
-        )
-      : null,
-  child: (filteredStudents[index]['image'] == null ||
-          filteredStudents[index]['image'].toString().isEmpty)
-      ? const Icon(Icons.person)
-      : null,
-),
+            leading: const CircleAvatar(
+
+              backgroundColor: Color.fromARGB(214, 240, 219, 37),
+
+              child: Icon(
+                Icons.person,
+                color: Colors.white,
+              ),
+
+            ),
 
             title: Text(
 
@@ -640,6 +604,16 @@ void showAddStudentDialog() {
               ],
 
             ),
+            onTap: () {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => StudentDetailsPage(
+        student: filteredStudents[index],
+      ),
+    ),
+  );
+},
 
           ),
 
