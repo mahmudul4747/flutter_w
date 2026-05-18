@@ -19,7 +19,7 @@ import 'package:flutter_w/controller/notification.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+/*
   // Firebase Initialize
   try {
     await Firebase.initializeApp();
@@ -34,7 +34,7 @@ void main() async {
     debugPrint("Notification Initialized");
   } catch (e) {
     debugPrint("Notification Error: $e");
-  }
+  }*/
 
   runApp(const MyApp());
 }

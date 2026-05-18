@@ -17,6 +17,7 @@ class _StudentListState extends State<StudentList> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController departmentController = TextEditingController();
   final TextEditingController semesterController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
  
  List<Map<String, dynamic>> filteredStudents = [];
 
@@ -57,10 +58,10 @@ final TextEditingController searchController = TextEditingController();
     var response = await http.get(url);
 
     if (response.statusCode == 200) {
-print("data successfully fetched"); 
+
       final data = jsonDecode(response.body);
 
-print("Imran: $data");
+
       setState(() {
 
         students = List<Map<String, dynamic>>.from(data);
@@ -109,7 +110,8 @@ print("Imran: $data");
 
   // Update
   Future<void> updateStudentAPI(String id) async {
-
+print("ID: $id");
+print(nameController.text);
   var url = Uri.parse(
     "http://10.0.2.2/php/stu_update.php",
   );
@@ -123,168 +125,95 @@ print("Imran: $data");
     "semester": semesterController.text,
 
   });
-
+  
   await getStudents();
 
   setState(() {});
 
 }
   // ADD DIALOG
-  void showAddStudentDialog() {
-
-    showDialog(
-      context: context,
-      builder: (context) {
-
-        return AlertDialog(
-
-  title: const Text("Add Student"),
-
-  content: Column(
-
-    mainAxisSize: MainAxisSize.min,
-
-    children: [
-
-      TextField(
-
-        controller: nameController,
-
-        decoration: const InputDecoration(
-          hintText: "Name",
-        ),
-
-      ),
-
-      const SizedBox(height: 10),
-
-      TextField(
-
-        controller: emailController,
-
-        decoration: const InputDecoration(
-          hintText: "Email",
-        ),
-
-      ),
-
-    ],
-
-  ),
-
-  actions: [
-
-    TextButton(
-
-      onPressed: () => Navigator.pop(context),
-
-      child: const Text("Cancel"),
-
-    ),
-
-    ElevatedButton(
-
-      onPressed: () async {
-
-        await addStudentAPI();
-
-        nameController.clear();
-        emailController.clear();
-
-        Navigator.pop(context);
-
-        ScaffoldMessenger.of(context).showSnackBar(
-
-          const SnackBar(
-
-            content: Text("Student Added Successfully"),
-
-          ),
-
-        );
-
-      },
-
-      child: const Text("Add"),
-
-    ),
-
-  ],
-
-);
-      },
-    );
-  }
-  void showEditDialog(Map<String, dynamic> student) {
-
-  nameController.text = student['name'];
-  emailController.text = student['email'];
-  departmentController.text = student['department'];
-  semesterController.text = student['semester'];
+  // ADD DIALOG
+void showAddStudentDialog() {
 
   showDialog(
-
     context: context,
-
     builder: (context) {
 
       return AlertDialog(
 
-        title: const Text("Update Student"),
+        title: const Text("Add Student"),
 
-        content: Column(
+        content: Form(
 
-          mainAxisSize: MainAxisSize.min,
+          key: _formKey,
 
-          children: [
+          child: Column(
 
-            TextField(
+            mainAxisSize: MainAxisSize.min,
 
-              controller: nameController,
+            children: [
 
-              decoration: const InputDecoration(
-                hintText: "Name",
+              TextFormField(
+
+                controller: nameController,
+
+                decoration: const InputDecoration(
+
+                  hintText: "Name",
+                  border: OutlineInputBorder(),
+
+                ),
+
+                validator: (value) {
+
+                  if (value == null || value.isEmpty) {
+
+                    return "Please Enter Name";
+
+                  }
+
+                  return null;
+
+                },
+
               ),
 
-            ),
+              const SizedBox(height: 10),
 
-            const SizedBox(height: 10),
+              TextFormField(
 
-            TextField(
+                controller: emailController,
 
-              controller: emailController,
+                decoration: const InputDecoration(
 
-              decoration: const InputDecoration(
-                hintText: "Email",
+                  hintText: "Email",
+                  border: OutlineInputBorder(),
+
+                ),
+
+                validator: (value) {
+
+                  if (value == null || value.isEmpty) {
+
+                    return "Please Enter Email";
+
+                  }
+
+                  if (!value.contains("@")) {
+
+                    return "Enter Valid Email";
+
+                  }
+
+                  return null;
+
+                },
+
               ),
 
-            ),
+            ],
 
-            const SizedBox(height: 10),
-
-            TextField(
-
-              controller: departmentController,
-
-              decoration: const InputDecoration(
-                hintText: "Department",
-              ),
-
-            ),
-
-            const SizedBox(height: 10),
-
-            TextField(
-
-              controller: semesterController,
-
-              decoration: const InputDecoration(
-                hintText: "Semester",
-              ),
-
-            ),
-
-          ],
+          ),
 
         ),
 
@@ -292,8 +221,10 @@ print("Imran: $data");
 
           TextButton(
 
-            onPressed: (){
+            onPressed: () {
+
               Navigator.pop(context);
+
             },
 
             child: const Text("Cancel"),
@@ -304,15 +235,30 @@ print("Imran: $data");
 
             onPressed: () async {
 
-              await updateStudentAPI(
-                student['id'].toString(),
-              );
+              if (_formKey.currentState!.validate()) {
 
-              Navigator.pop(context);
+                await addStudentAPI();
+
+                nameController.clear();
+                emailController.clear();
+
+                Navigator.pop(context);
+
+                ScaffoldMessenger.of(context).showSnackBar(
+
+                  const SnackBar(
+
+                    content: Text("Student Added Successfully"),
+
+                  ),
+
+                );
+
+              }
 
             },
 
-            child: const Text("Update"),
+            child: const Text("Add"),
 
           ),
 
@@ -325,6 +271,95 @@ print("Imran: $data");
   );
 
 }
+  // EDIT DIALOG
+  void showEditDialog(Map<String, dynamic> student) {
+
+    nameController.text = student['name'] ?? "";
+    emailController.text = student['email'] ?? "";
+   
+
+    showDialog(
+      context: context,
+      builder: (context) {
+
+        return AlertDialog(
+  title: const Text("Edit Student"),
+  content: Form(
+    key: _formKey,
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        TextFormField(
+          controller: nameController,
+          decoration: const InputDecoration(
+            hintText: "Name",
+            border: OutlineInputBorder(),
+          ),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return "Please Enter Name";
+            }
+            return null;
+          },
+        ),
+        const SizedBox(height: 10),
+        TextFormField(
+          controller: emailController,
+          decoration: const InputDecoration(
+            hintText: "Email",
+            border: OutlineInputBorder(),
+          ),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return "Please Enter Email";
+            }
+            if (!value.contains("@")) {
+              return "Enter Valid Email";
+            }
+            return null;
+          },
+        ),
+      ],
+    ),
+  ),
+  actions: [
+    TextButton(
+      onPressed: () => Navigator.pop(context),
+      child: const Text("Cancel"),
+    ),
+
+    ElevatedButton(
+      onPressed: () async {
+          if (_formKey.currentState!.validate()) {
+
+        await updateStudentAPI(student['id'].toString());
+        nameController.clear();
+        emailController.clear();
+        departmentController.clear();
+        semesterController.clear();
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Student Updated Successfully"),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Please fill all fields"),
+          ),
+        );
+      }
+      },
+      child: const Text("Update"),
+    ),
+  ],
+  
+);
+
+      },
+    );
+  }
 
   //  UI 
   @override
@@ -441,11 +476,16 @@ print("Imran: $data");
 
             return ListTile(
 
-              leading: const CircleAvatar(),
+              leading: const CircleAvatar(
+                backgroundColor: Color.fromARGB(214, 240, 219, 37),
+                child: Icon(Icons.person, color: Color.fromARGB(221, 252, 251, 251)),
+              ),
 
               title: Text(
-                filteredStudents[index]['name'] ?? "",
-              ),
+                filteredStudents[index]['name'] ?? "",style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+              ),),
 
               subtitle: Column(
                 crossAxisAlignment:
@@ -454,7 +494,7 @@ print("Imran: $data");
                 children: [
 
                   Text(
-                    "Email: ${filteredStudents[index]['email']}",
+                    "Email: ${filteredStudents[index]['email']}", style: const TextStyle(color: Colors.black87),
                   ),
 
                 /*  Text(
