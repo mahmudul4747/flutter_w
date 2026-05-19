@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fl_chart/fl_chart.dart';
 
 class StudentDetailsPage extends StatefulWidget {
   final Map<String, dynamic> student;
@@ -10,6 +11,106 @@ class StudentDetailsPage extends StatefulWidget {
 }
 
 class _StudentDetailsPageState extends State<StudentDetailsPage> {
+  Widget _buildSkillChart() {
+  return Container(
+    height: 320,
+    padding: const EdgeInsets.all(20),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(20),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.05),
+          blurRadius: 10,
+          offset: const Offset(0, 5),
+        ),
+      ],
+    ),
+    child: BarChart(
+      BarChartData(
+        alignment: BarChartAlignment.spaceAround,
+        maxY: 100,
+
+        borderData: FlBorderData(show: false),
+
+        gridData: FlGridData(
+          show: true,
+          drawVerticalLine: false,
+        ),
+
+        titlesData: FlTitlesData(
+
+          topTitles: const AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
+
+          rightTitles: const AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
+
+          leftTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              reservedSize: 30,
+              interval: 20,
+            ),
+          ),
+
+          bottomTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              getTitlesWidget: (value, meta) {
+                      List<String> titles = [
+                        "C",
+                        "Java",
+                        "Py",
+                        "PHP",
+                        "Dart",
+                        "HTML",
+                        "CSS",
+                        "JS",
+                        "Flutter",
+                        "Algo"
+                      ];
+
+                      if (value.toInt() >= titles.length) {
+                        return const SizedBox();
+                      }
+
+                      return Padding(
+                        padding: const EdgeInsets.only(top: 8),
+                        child: Text(
+                          titles[value.toInt()],
+                          style: const TextStyle(fontSize: 10),
+                        ),
+                      );
+                    },
+            ),
+          ),
+        ),
+
+        barGroups: List.generate(
+          skills.length,
+          (index) {
+
+            return BarChartGroupData(
+              x: index,
+              barRods: [
+                BarChartRodData(
+                  toY: skills[index]['progress'].toDouble(),
+                  width: 18,
+                  borderRadius: BorderRadius.circular(6),
+                  color: Colors.amber,
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    ),
+  );
+}
+  
   double animValue = 0;
 
   @override
@@ -35,6 +136,7 @@ class _StudentDetailsPageState extends State<StudentDetailsPage> {
     {"name": "Flutter", "progress": 88},
     {"name": "Algorithm", "progress": 55},
   ];
+
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +195,11 @@ class _StudentDetailsPageState extends State<StudentDetailsPage> {
                     ),
                   ),
 
-                  const SizedBox(height: 10),
+                const SizedBox(height: 10),
+
+                  _buildSkillChart(),
+
+                  const SizedBox(height: 20),
 
                   ...skills.map((skill) => _skillCard(skill)).toList(),
                 ],
