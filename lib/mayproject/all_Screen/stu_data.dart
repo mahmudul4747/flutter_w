@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class StudentDetailsPage extends StatefulWidget {
   final Map<String, dynamic> student;
@@ -123,19 +124,26 @@ class _StudentDetailsPageState extends State<StudentDetailsPage> {
       });
     });
   }
+  Future<void> openLink(String url) async {
 
-  final List<Map<String, dynamic>> skills = [
-    {"name": "C Language", "progress": 80},
-    {"name": "Java", "progress": 70},
-    {"name": "Python", "progress": 60},
-    {"name": "PHP", "progress": 75},
-    {"name": "Dart", "progress": 90},
-    {"name": "HTML", "progress": 95},
-    {"name": "CSS", "progress": 85},
-    {"name": "JavaScript", "progress": 65},
-    {"name": "Flutter", "progress": 88},
-    {"name": "Algorithm", "progress": 55},
-  ];
+  final Uri uri = Uri.parse(url);
+
+  if (await canLaunchUrl(uri)) {
+
+    await launchUrl(
+      uri,
+      mode: LaunchMode.externalApplication,
+    );
+
+  }
+
+}
+
+  List<Map<String, dynamic>> get skills {
+  return List<Map<String, dynamic>>.from(
+    widget.student['skills'] ?? [],
+  );
+}
 
 
   @override
@@ -167,8 +175,9 @@ class _StudentDetailsPageState extends State<StudentDetailsPage> {
                     backgroundColor: Colors.white,
                     child: Icon(Icons.person, size: 50),
                   ),
+
                 ),
-              ),
+               ),
             ),
           ),
 
@@ -193,7 +202,46 @@ class _StudentDetailsPageState extends State<StudentDetailsPage> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ),
+                  ), const SizedBox(height: 20),
+
+const Align(
+  alignment: Alignment.centerLeft,
+  child: Text(
+    "Links",
+    style: TextStyle(
+      fontSize: 18,
+      fontWeight: FontWeight.bold,
+    ),
+  ),
+),
+
+const SizedBox(height: 10),
+
+Row(
+  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  children: [
+
+    ElevatedButton.icon(
+      onPressed: () {
+        final url = widget.student['github'];
+        if (url != null) openLink(url);
+      },
+      icon: const Icon(Icons.code),
+      label: const Text("GitHub"),
+    ),
+
+    ElevatedButton.icon(
+      onPressed: () {
+        final url = widget.student['cv'];
+        if (url != null) openLink(url);
+      },
+      icon: const Icon(Icons.picture_as_pdf),
+      label: const Text("CV"),
+    ),
+
+  ],
+),
+              
 
                 const SizedBox(height: 10),
 
@@ -293,6 +341,7 @@ class _StudentDetailsPageState extends State<StudentDetailsPage> {
               ),
             ],
           ),
+          
         );
       },
     );
