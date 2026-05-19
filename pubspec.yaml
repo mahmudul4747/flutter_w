@@ -20,7 +20,7 @@ dependencies:
   math_expressions: ^2.4.0
   provider: ^6.1.2
   image_picker: ^1.0.7
-  dependencies:
+  
   fl_chart: ^0.68.0
   
   dio: ^5.4.0
