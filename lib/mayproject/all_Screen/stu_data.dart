@@ -165,12 +165,12 @@ class _StudentDetailsPageState extends State<StudentDetailsPage> {
 
               background: Container(
                 decoration: const BoxDecoration(
-                  gradient: LinearGradient(
+                  gradient:LinearGradient(
                     colors: [
-                      Color.fromARGB(214, 240, 219, 37),
-                      Color(0xFFFFD54F),
+                     const Color(0xFF6C63FF),
+                      const Color(0xFF3F3FF000),
                     ],
-                  ),
+                  )
                 ),
 
                 child: const Center(
@@ -333,10 +333,19 @@ class _StudentDetailsPageState extends State<StudentDetailsPage> {
                     child: CircularProgressIndicator(
                       value: value,
                       strokeWidth: 6,
-                      backgroundColor: Colors.grey[200],
-                      color: Colors.amber,
+                      backgroundColor: Colors.grey[200];
+                      background: Container(
+                decoration: const BoxDecoration(
+                  gradient:LinearGradient(
+                    colors: [
+                     const Color(0xFF6C63FF),
+                      const Color(0xFF3F3FF000),
+                    ],
+                  )
+                ),
                     ),
                   ),
+                  
 
                   Text("${(value * 100).toInt()}%"),
                 ],
