@@ -375,270 +375,252 @@ void showAddStudentDialog() {
 
   //  UI 
   @override
-  Widget build(BuildContext context) {
+Widget build(BuildContext context) {
+  return Scaffold(
 
-    return Scaffold(
+   floatingActionButton: Container(
+  decoration: BoxDecoration(
+    shape: BoxShape.circle,
 
-      floatingActionButton: FloatingActionButton(
-        onPressed: showAddStudentDialog,
-        backgroundColor: const Color.fromARGB(214, 240, 219, 37),
-        child: const Icon(Icons.add),
-      ),
-
-      body: Container(
-        color: const Color.fromARGB(214, 240, 219, 37),
-
-        child: Column(
-
-          children: [
-
-            const SizedBox(height: 40),
-
-            const Text(
-              "Student List",
-              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-            ),
-          
-            const SizedBox(height: 20),
-
-            Expanded(
-
-              child: Container(
-
-  decoration: const BoxDecoration(
-    color: Colors.white,
-    borderRadius: BorderRadius.vertical(
-      top: Radius.circular(30),
-    ),
-  ),
-
-  child: Column(
-
-    children: [
-
-      // SEARCH BAR
-      Padding(
-
-  padding: const EdgeInsets.all(15),
-
-  child: Container(
-
-    decoration: BoxDecoration(
-
-      borderRadius: BorderRadius.circular(25),
-
-      boxShadow: [
-
-        BoxShadow(
-
-          color: const Color.fromARGB(214, 240, 219, 37),
-
-          spreadRadius: 3,
-
-          blurRadius: 10,
-
-          offset: const Offset(0, 3),
-
-        ),
-
+    gradient: const LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [
+        Color(0xFF6C63FF),
+        Color(0xFF8E7CFF),
+        Color(0xFF2D1B69),
       ],
-
     ),
 
-    child: TextField(
-
-      controller: searchController,
-
-      onChanged: searchStudent,
-
-      decoration: InputDecoration(
-
-        hintText: "Search Student",
-
-        prefixIcon: const Icon(Icons.search),
-
-        filled: true,
-
-        fillColor: Colors.white,
-
-        border: OutlineInputBorder(
-
-          borderRadius: BorderRadius.circular(25),
-
-          borderSide: BorderSide.none,
-
-        ),
-
+    boxShadow: [
+      BoxShadow(
+        color: const Color(0xFF6C63FF).withOpacity(0.5),
+        blurRadius: 20,
+        spreadRadius: 2,
+        offset: const Offset(0, 8),
       ),
-
-    ),
-
+    ],
   ),
 
-),
-      // LIST
-      Expanded(
+  child: FloatingActionButton(
+    onPressed: showAddStudentDialog,
 
-  child: ListView.builder(
+    backgroundColor: Colors.transparent,
+    elevation: 0,
 
-    itemCount: filteredStudents.length,
-
-    itemBuilder: (context, index) {
-
-      return Padding(
-
-        padding: const EdgeInsets.symmetric(
-          horizontal: 12,
-          vertical: 6,
-        ),
-
-        child: Container(
-
-          decoration: BoxDecoration(
-
-            color: Colors.white,
-
-            borderRadius: BorderRadius.circular(15),
-
-            boxShadow: [
-
-              BoxShadow(
-
-                color: const Color.fromARGB(214, 240, 219, 37),
-
-                blurRadius: 6,
-
-                offset: const Offset(0, 3),
-
-              ),
-
-            ],
-
-          ),
-
-          child: ListTile(
-
-            leading: const CircleAvatar(
-
-              backgroundColor: Color.fromARGB(214, 240, 219, 37),
-
-              child: Icon(
-                Icons.person,
-                color: Colors.white,
-              ),
-
-            ),
-
-            title: Text(
-
-              filteredStudents[index]['name'] ?? "",
-
-              style: const TextStyle(
-
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-
-              ),
-
-            ),
-
-            subtitle: Column(
-
-              crossAxisAlignment: CrossAxisAlignment.start,
-
-              children: [
-
-                const SizedBox(height: 5),
-
-                Text(
-
-                  "Email: ${filteredStudents[index]['email']}",
-
-                  style: const TextStyle(
-                    color: Colors.black87,
-                  ),
-
-                ),
-
-              ],
-
-            ),
-
-            trailing: PopupMenuButton(
-
-              onSelected: (value) async {
-
-                if (value == 'edit') {
-
-                  showEditDialog(filteredStudents[index]);
-
-                }
-
-                else if (value == 'delete') {
-
-                  await deleteStudentAPI(
-                    filteredStudents[index]['id'].toString(),
-                  );
-
-                }
-
-              },
-
-              itemBuilder: (context) => const [
-
-                PopupMenuItem(
-
-                  value: 'edit',
-
-                  child: Text("Edit"),
-
-                ),
-
-                PopupMenuItem(
-
-                  value: 'delete',
-
-                  child: Text("Delete"),
-
-                ),
-
-              ],
-
-            ),
-            onTap: () {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => StudentDetailsPage(
-        student: filteredStudents[index],
-      ),
+    child: const Icon(
+      Icons.add,
+      color: Colors.white,
     ),
-  );
-},
-
-          ),
-
-        ),
-
-      );
-
-    },
-
   ),
-
-)
-
-                  ],
-
-                ),
-
-              ),
+),  
 
 
-            )
+    body: Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color.fromARGB(246, 29, 60, 194),
+            Color(0xFF8E7CFF),
+            Color(0xFF2D1B68),
           ],
         ),
       ),
-    );
-  }
+
+      child: Column(
+        children: [
+
+          const SizedBox(height: 50),
+
+          // TITLE
+          Text(
+            "Student List",
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              fontFamily: "Poppins",
+            ),
+          ),
+
+          const SizedBox(height: 20),
+
+          Expanded(
+            child: Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(35),
+                ),
+              ),
+
+              child: Column(
+                children: [
+
+                  // ================= SEARCH BAR (GLASS STYLE) =================
+                  Padding(
+                    padding: const EdgeInsets.all(15),
+
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25),
+
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.white.withOpacity(0.9),
+                            const Color.fromARGB(255, 81, 132, 190).withOpacity(0.5),
+                            Colors.white.withOpacity(0.9),
+
+                          ],
+                        ),
+
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color.fromARGB(255, 135, 160, 226),
+                              
+                            blurRadius: 6,
+                            offset: const Offset(0, 5),
+                          ),
+                        ],
+                      ),
+
+                      child: TextField(
+                        controller: searchController,
+                        onChanged: searchStudent,
+
+                        decoration: InputDecoration(
+                          hintText: "Search Student...",
+
+                          prefixIcon: const Icon(Icons.search),
+
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25),
+                            borderSide: BorderSide.none,
+                          ),
+
+                          filled: true,
+                          fillColor: Colors.transparent,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  // ================= LIST =================
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: filteredStudents.length,
+
+                      itemBuilder: (context, index) {
+
+                        final student = filteredStudents[index];
+
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
+
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+
+                              gradient: LinearGradient(
+                                colors: [
+                                  Colors.white,
+                                  Colors.grey.shade100,
+                                ],
+                              ),
+
+                              boxShadow: [
+                                BoxShadow(
+                                  color: const Color.fromARGB(255, 170, 167, 167),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 6),
+                                ),
+                              ],
+                            ),
+
+                            child: ListTile(
+                              contentPadding: const EdgeInsets.all(12),
+
+                              leading: Hero(
+                                tag: student['id'],
+                                child: CircleAvatar(
+                                  radius: 25,
+                                  backgroundColor: const Color(0xFF6C63FF),
+                                  child: Text(
+                                    student['name'][0].toUpperCase(),
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+
+                              title: Text(
+                                student['name'] ?? "",
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+
+                              subtitle: Text(
+                                student['email'] ?? "",
+                                style: const TextStyle(
+                                  color: Colors.grey,
+                                ),
+                              ),
+
+                              trailing: PopupMenuButton(
+                                onSelected: (value) async {
+                                  if (value == 'edit') {
+                                    showEditDialog(student);
+                                  } else if (value == 'delete') {
+                                    await deleteStudentAPI(
+                                      student['id'].toString(),
+                                    );
+                                  }
+                                },
+
+                                itemBuilder: (context) => const [
+                                  PopupMenuItem(
+                                    value: 'edit',
+                                    child: Text("Edit"),
+                                  ),
+                                  PopupMenuItem(
+                                    value: 'delete',
+                                    child: Text("Delete"),
+                                  ),
+                                ],
+                              ),
+
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => StudentDetailsPage(
+                                      student: student,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
 }
+  }

@@ -39,7 +39,7 @@ class _StudentDetailsPageState extends State<StudentDetailsPage> {
 
       final response = await http.get(
         Uri.parse(
-          "http://10.0.2.2/phpLG/get_skills.php",
+          "http://10.0.2.2/php/get_skills.php",
         ),
       );
 
