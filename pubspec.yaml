@@ -33,7 +33,7 @@ dependencies:
   http: ^1.5.0
 
   # For using Google Fonts easily
-  google_fonts: ^6.3.2
+ 
 
   # For reading/writing local files & directories
   path_provider: ^2.1.5
