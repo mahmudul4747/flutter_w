@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_w/mayproject/all_Screen/Student_list.dart';
+
 
 class Login2 extends StatefulWidget {
   const Login2({super.key});
@@ -19,22 +21,24 @@ class _Login2State extends State<Login2> {
     });
 
     var data = response.body;
-
+print("Response: $data");
     print(data);
 
     if (data.contains("success")) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Login Success")),
-      );
-      emailController.clear();
-      passwordController.clear();
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Login Failed")),
-      );
-      emailController.clear();
-      passwordController.clear();
-    }
+  ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(content: Text("Login Success")),
+  );
+
+ Navigator.pushReplacement(
+  context,
+  MaterialPageRoute(
+    builder: (context) => const StudentList(),
+  ),
+);
+
+  emailController.clear();
+  passwordController.clear();
+}
   }
   @override
   void dispose() {

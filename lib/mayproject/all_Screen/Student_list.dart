@@ -6,9 +6,8 @@ import 'package:http/http.dart' as http;
 
 
 class StudentList extends StatefulWidget {
-    final Function toggleTheme;
-    
-  const StudentList({super.key, required this.toggleTheme});
+   
+  const StudentList({super.key, });
 
   @override
   State<StudentList> createState() => _StudentListState();
