@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_w/mayproject/all_Screen/Registerp.dart';
 import 'package:http/http.dart' as http;
-
+import 'dart:convert';
 class Loginp extends StatefulWidget {
   const Loginp({super.key});
 
@@ -13,30 +13,32 @@ class _LoginpState extends State<Loginp> {
    final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
-  Future<void> login() async{
-    var response = await http.post(Uri.parse('http://10.0.2.2/php/login.php'), body: {
+  Future<void> login() async {
+  var response = await http.post(
+    Uri.parse('http://10.0.2.2/php/login.php'),
+    body: {
       'email': emailController.text,
       'password': passwordController.text,
-    });
+    },
+  );
 
-    var data = response.body;
+  print(response.body);
 
-    print(data);
+  var data = jsonDecode(response.body);
 
-    if (data.contains("success")) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Login Success")),
-      );
-      emailController.clear();
-      passwordController.clear();
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Login Failed")),
-      );
-      emailController.clear();
-      passwordController.clear();
-    }
+  if (data['status'] == 'success') {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Login Success")),
+    );
+
+    Navigator.pushReplacementNamed(context, '/list');
+
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Login Failed")),
+    );
   }
+}
   @override
   void dispose() {
     emailController.dispose();

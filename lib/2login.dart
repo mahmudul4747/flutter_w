@@ -21,7 +21,7 @@ class _Login2State extends State<Login2> {
     });
 
     var data = response.body;
-print("Response: $data");
+
     print(data);
 
     if (data.contains("success")) {
