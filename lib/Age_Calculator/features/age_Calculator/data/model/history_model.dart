@@ -1,9 +1,6 @@
 class HistoryModel {
-
   final String dob;
-
   final String calculatedAge;
-
   final DateTime createdAt;
 
   HistoryModel({
@@ -14,20 +11,19 @@ class HistoryModel {
 
   Map<String, dynamic> toMap() {
     return {
-      "dob": dob,
-      "calculatedAge": calculatedAge,
-      "createdAt": createdAt.toIso8601String(),
+      'dob': dob,
+      'calculatedAge': calculatedAge,
+      'createdAt': createdAt.toIso8601String(),
     };
   }
 
-  factory HistoryModel.fromMap(
-      Map<String, dynamic> map) {
-
+  factory HistoryModel.fromMap(Map<String, dynamic> map) {
     return HistoryModel(
-      dob: map["dob"],
-      calculatedAge: map["calculatedAge"],
-      createdAt:
-      DateTime.parse(map["createdAt"]),
+      dob: map['dob'] ?? '',
+      calculatedAge: map['calculatedAge'] ?? '',
+      createdAt: map['createdAt'] != null
+          ? DateTime.parse(map['createdAt'])
+          : DateTime.now(),
     );
   }
 }

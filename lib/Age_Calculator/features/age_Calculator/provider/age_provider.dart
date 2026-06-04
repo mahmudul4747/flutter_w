@@ -1,40 +1,70 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_w/Age_Calculator/features/age_Calculator/data/model/age_model.dart';
+import 'package:flutter_w/Age_Calculator/features/age_Calculator/repository/age_repository.dart';
 
 
-import '../repository/age_repository.dart';
 
 class AgeProvider extends ChangeNotifier {
 
-  final AgeRepository repository =
+  final AgeRepository repo =
       AgeRepository();
 
-  DateTime? dob;
   AgeModel? age;
+  DateTime? dob;
 
   Timer? _timer;
 
   void setDob(DateTime date) {
+
     dob = date;
-    _startLiveUpdate();
+
+    _startLive();
   }
 
-  void _startLiveUpdate() {
+  void _startLive() {
+
     _timer?.cancel();
 
     _timer = Timer.periodic(
       const Duration(seconds: 1),
       (_) {
+
         if (dob != null) {
-          age = repository.getAge(dob!);
+
+          age = repo.getAge(dob!);
+
           notifyListeners();
         }
       },
     );
   }
 
-  void stop() {
+  String getShareText() {
+
+    if (age == null) return "";
+
+    return """
+🎂 Age Calculator Result
+
+Years: ${age!.years}
+Months: ${age!.months}
+Days: ${age!.days}
+
+Total Days: ${age!.totalDays}
+Total Hours: ${age!.totalHours}
+Total Minutes: ${age!.totalMinutes}
+
+Zodiac: ${age!.zodiac}
+Next Birthday: ${age!.nextBirthday}
+""";
+  }
+
+  @override
+  void dispose() {
+
     _timer?.cancel();
+
+    super.dispose();
   }
 }
