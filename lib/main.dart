@@ -7,6 +7,7 @@ import 'package:flutter_w/1login.dart';
 import 'package:flutter_w/2login.dart';
 import 'package:flutter_w/3rdlogin.dart';
 import 'package:flutter_w/3rdreg.dart';
+import 'package:flutter_w/Age_Calculator/mainc.dart';
 import 'package:flutter_w/Home/login.dart';
 import 'package:flutter_w/age.dart';
 import 'package:flutter_w/mayproject/all_Screen/Student_list.dart';
@@ -18,27 +19,15 @@ import 'package:flutter_w/Home/home2.dart';
 
 // Controller
 import 'package:flutter_w/controller/notification.dart';
+import 'package:provider/provider.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-/*
-  // Firebase Initialize
-  try {
-    await Firebase.initializeApp();
-    debugPrint("Firebase Initialized");
-  } catch (e) {
-    debugPrint("Firebase Error: $e");
-  }
-
-  // Notification Initialize
-  try {
-    await initNotification();
-    debugPrint("Notification Initialized");
-  } catch (e) {
-    debugPrint("Notification Error: $e");
-  }*/
-
-  runApp(const MyApp());
+void main() {
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => ThemeProvider(),
+      child: const MyApp1(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -51,7 +40,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter App',
 
       // First Screen
-      home: AgeHome(),
+      home: MyApp1(),
 
      
     );
