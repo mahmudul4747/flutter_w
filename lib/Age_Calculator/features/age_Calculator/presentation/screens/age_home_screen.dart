@@ -103,25 +103,35 @@ class AgeHomeScreen extends StatelessWidget {
 
                 if (provider.age != null) ...[
 
-                  Row(
+                 Row(
                     children: [
 
-                      AgeCard(
-                        title: "Years",
-                        value: provider.age!.years.toString(),
-                        icon: Icons.calendar_today,
+                      Expanded(
+                        child: AgeCard(
+                          title: "Years",
+                          value: provider.age!.years.toString(),
+                          icon: Icons.calendar_today,
+                        ),
                       ),
 
-                      AgeCard(
-                        title: "Months",
-                        value: provider.age!.months.toString(),
-                        icon: Icons.date_range,
+                      const SizedBox(width: 8),
+
+                      Expanded(
+                        child: AgeCard(
+                          title: "Months",
+                          value: provider.age!.months.toString(),
+                          icon: Icons.date_range,
+                        ),
                       ),
 
-                      AgeCard(
-                        title: "Days",
-                        value: provider.age!.days.toString(),
-                        icon: Icons.today,
+                      const SizedBox(width: 8),
+
+                      Expanded(
+                        child: AgeCard(
+                          title: "Days",
+                          value: provider.age!.days.toString(),
+                          icon: Icons.today,
+                        ),
                       ),
                     ],
                   ),
