@@ -16,11 +16,14 @@ class AgeProvider extends ChangeNotifier {
   Timer? _timer;
 
   void setDob(DateTime date) {
+  dob = date;
 
-    dob = date;
+  age = repo.getAge(date);
 
-    _startLive();
-  }
+  notifyListeners();
+
+  _startLive();
+}
 
   void _startLive() {
 

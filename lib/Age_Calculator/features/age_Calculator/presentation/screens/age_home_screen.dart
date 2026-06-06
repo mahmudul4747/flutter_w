@@ -36,7 +36,7 @@ class AgeHomeScreen extends StatelessWidget {
 
         // LOTTIE (safe)
         Lottie.asset(
-          "assets/animations/age_animation.json",
+  "assets/animations/age_animation.json",
           height: 120,
           errorBuilder: (context, error, stackTrace) {
             return const Icon(
