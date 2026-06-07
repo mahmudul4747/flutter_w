@@ -41,19 +41,17 @@ class _AgeHomeState extends State<AgeHome> {
       lastDate: now,
     );
 
-    if (picked != null) {
-      birthDate = picked;
-      calculateAge();
+    birthDate = picked;
+    calculateAge();
 
-      timer?.cancel();
-      timer = Timer.periodic(
-        const Duration(seconds: 1),
-        (timer) {
-          calculateAge();
-        },
-      );
+    timer?.cancel();
+    timer = Timer.periodic(
+      const Duration(seconds: 1),
+      (timer) {
+        calculateAge();
+      },
+    );
     }
-  }
 
   void calculateAge() {
     if (birthDate == null) return;

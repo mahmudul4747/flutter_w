@@ -51,18 +51,17 @@ class AgeHomeScreen extends StatelessWidget {
         // DOB PICKER
         ElevatedButton.icon(
           onPressed: () async {
+  DateTime? picked = await showDatePicker(
+    context: context,
+    firstDate: DateTime(1900),
+    lastDate: DateTime.now(),
+    initialDate: DateTime(2000),
+  );
 
-            DateTime? picked = await showDatePicker(
-              context: context,
-              firstDate: DateTime(1900),
-              lastDate: DateTime.now(),
-              initialDate: DateTime(2000),
-            );
+  if (picked == null) return;
 
-            if (picked != null) {
-              provider.setDob(picked);
-            }
-          },
+  provider.setDob(picked);
+},
           icon: const Icon(Icons.cake),
           label: const Text("Select DOB"),
         ),
@@ -70,28 +69,15 @@ class AgeHomeScreen extends StatelessWidget {
         const SizedBox(height: 10),
 
         // SHARE + SAVE
-        ElevatedButton.icon(
-          onPressed: () {
-
-            if (provider.age == null || provider.dob == null) {
-              return;
-            }
-
-            ShareService.shareResult(
-              provider.getShareText(),
-            );
-
-          /*  firebase.saveHistory(
-              HistoryModel(
-                dob: provider.dob!.toIso8601String(),
-                calculatedAge: provider.getShareText(),
-                createdAt: DateTime.now(),
-              ),
-            );*/
-          },
-          icon: const Icon(Icons.share),
-          label: const Text("Share & Save"),
-        ),
+       ElevatedButton.icon(
+  onPressed: (provider.age == null || provider.dob == null)
+      ? null
+      : () {
+          ShareService.shareResult(provider.getShareText());
+        },
+  icon: const Icon(Icons.share),
+  label: const Text("Share & Save"),
+),
 
         const SizedBox(height: 10),
 

@@ -63,9 +63,7 @@ class TaskController extends GetxController {
     final prefs = await SharedPreferences.getInstance();
     List<String>? data = prefs.getStringList("tasks");
 
-    if (data != null) {
-      tasks.value =
-          data.map((e) => Task.fromJson(jsonDecode(e))).toList();
+    tasks.value =
+        data.map((e) => Task.fromJson(jsonDecode(e))).toList();
     }
-  }
 }
