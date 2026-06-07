@@ -1,44 +1,21 @@
-plugins {
-    id "com.android.application"
-    id "com.google.gms.google-services"
-}
-
 android {
-    namespace = "com.example.flutter_w"
-    compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
-
-    compileOptions {
-        isCoreLibraryDesugaringEnabled = true
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-
-    
-kotlinOptions {
-    jvmTarget = "1.8"
-}
+    compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.flutter_w"
-        minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
-        versionCode = flutter.versionCode
-        versionName = flutter.versionName
+        targetSdk = 34
     }
 
-    buildTypes {
-        release {
-            signingConfig = signingConfigs.getByName("debug")
-        }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+        coreLibraryDesugaringEnabled = true
+    }
+
+    kotlinOptions {
+        jvmTarget = "17"
     }
 }
 
-// ✅ dependencies এখানে হবে (android এর বাইরে)
 dependencies {
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
-}
-
-flutter {
-    source = "../.."
+    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:2.0.4"
 }

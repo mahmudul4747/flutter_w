@@ -1,14 +1,45 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_w/Age_Calculator/features/age_Calculator/presentation/navigation/bottom_nav_screen.dart';
-import 'firebase_options.dart';
+import 'package:flutter_w/Age_Calculator/core/theme/app_theme.dart';
+import 'package:flutter_w/Age_Calculator/core/theme/theme_provider.dart';
+import 'package:flutter_w/Age_Calculator/features/age_Calculator/presentation/screens/splash_screen.dart';
+import 'package:flutter_w/Age_Calculator/features/age_Calculator/provider/age_provider.dart';
+import 'package:provider/provider.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+import 'Age_Calculator/features/age_Calculator/presentation/navigation/bottom_nav_screen.dart';
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
+void main() {
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => ThemeProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => AgeProvider(),
+        ),
+      ],
+      child: const MyApp(),
+    ),
   );
+}
 
-  runApp(const BottomNavScreen());
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+
+    final theme =
+        Provider.of<ThemeProvider>(context);
+
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: theme.themeMode,
+
+      home: BottomNavScreen(),
+    );
+  }
 }
