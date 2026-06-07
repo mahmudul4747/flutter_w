@@ -1,26 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_w/Age_Calculator/core/theme/app_theme.dart';
-import 'package:flutter_w/Age_Calculator/core/theme/theme_provider.dart';
-import 'package:flutter_w/Age_Calculator/features/age_Calculator/presentation/screens/splash_screen.dart';
-import 'package:flutter_w/Age_Calculator/features/age_Calculator/provider/age_provider.dart';
-import 'package:provider/provider.dart';
-
-import 'Age_Calculator/features/age_Calculator/presentation/navigation/bottom_nav_screen.dart';
+import 'package:flutter_w/register..dart';
 
 void main() {
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (_) => ThemeProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => AgeProvider(),
-        ),
-      ],
-      child: const MyApp(),
-    ),
-  );
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -28,18 +10,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    final theme =
-        Provider.of<ThemeProvider>(context);
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
-      themeMode: theme.themeMode,
-
-      home: BottomNavScreen(),
+      title: 'Flutter App',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+      ),
+      home: const RegisterPage(),
     );
   }
 }
